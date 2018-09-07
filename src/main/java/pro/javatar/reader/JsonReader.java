@@ -14,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Andrii Murashkin / Javatar LLC
@@ -25,54 +27,72 @@ public class JsonReader {
     private ObjectMapper objectMapper;
 
     public JsonReader() {
-        this.objectMapper = getObjectMapper();
+        objectMapper = getObjectMapper();
     }
 
-    public <T> T getObjectFromFile(String filename, Class<T> name) {
-        URL resourcePath = this.getFileFromClasspath(filename);
+    public JsonReader(Map<String, Boolean> properties) {
+        objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        for (Map.Entry<String, Boolean> property : properties.entrySet()) {
+            objectMapper.configure(SerializationFeature.valueOf(property.getKey()), property.getValue());
+        }
+    }
 
+    /**
+     * @return serialized instance read from file
+     */
+    public <T> T getObjectFromFile(String fileName, Class<T> name) {
+        URL resourcePath = getFileFromClasspath(fileName);
         try {
-            return this.objectMapper.readValue(resourcePath, name);
+            return objectMapper.readValue(resourcePath, name);
         } catch (IOException e) {
-            logger.error("Fail to read file {} because of exception {}", filename, e.getMessage());
+            logger.error("Fail to read file {} because of exception {}", fileName, e.getMessage());
             return null;
         }
     }
 
-    public String getStringFromFile(String filename) {
+    /**
+     * @return String representation of json file
+     */
+    public String getStringFromFile(String fileName) {
         try {
-            return IOUtils.toString(this.getResourceAsStream(filename));
-        } catch (IOException e) {
-            logger.error("Fail to read file {} because of exception {}", filename, e.getMessage());
-            return null;
+            return IOUtils.toString(getResourceAsStream(fileName), Charset.defaultCharset());
+        } catch (Exception e) {
+            logger.error("Fail to read file {} because of exception {}", fileName, e.getMessage());
+            return "";
         }
     }
 
+    /**
+     * @return serialized object read from String
+     */
     public <T> T getObjectFromString(String json, Class<T> name) {
         try {
-            return this.objectMapper.readValue(json, name);
+            return objectMapper.readValue(json, name);
         } catch (IOException e) {
             logger.error("Fail to create object {} from json {}", name, json);
             return null;
         }
     }
 
+    /**
+     * @return list of serialized object read from String
+     */
     public <T> List<T> getListFromString(String json, Class<T> name) {
         try {
-            return (List) this.objectMapper.readValue(json, this.objectMapper.getTypeFactory().constructCollectionType(List.class, name));
+            return objectMapper.readValue(json,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, name));
         } catch (IOException e) {
-            logger.error("Fail to create list from json {}", json);
             return null;
         }
     }
 
-    public <T> List<T> getListFromFile(String filename, Class<T> name) {
-        URL resourcePath = this.getFileFromClasspath(filename);
-
+    public <T> List<T> getListFromFile(String fileName, Class<T> name) {
+        URL resourcePath = getFileFromClasspath(fileName);
         try {
-            return (List) this.objectMapper.readValue(resourcePath, this.objectMapper.getTypeFactory().constructCollectionType(List.class, name));
+            return objectMapper.readValue(resourcePath,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, name));
         } catch (IOException e) {
-            logger.error("Fail to create object from filename {}", filename);
             return null;
         }
     }
