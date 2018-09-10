@@ -18,7 +18,6 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <jackson.version>2.9.6</jackson.version>
         <commons-io.version>2.5</commons-io.version>
-        <slf4j.version>1.7.25</slf4j.version>
         <junit.version>4.12</junit.version>
     </properties>
 
@@ -53,12 +52,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
-        </dependency>
-        <!-- logging dependencies -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
 
         <!-- test-->

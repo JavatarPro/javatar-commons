@@ -8,8 +8,6 @@ package pro.javatar.reader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +21,6 @@ import java.util.Map;
  * @version 05-09-2018
  */
 public class JsonReader {
-    private static final Logger logger = LoggerFactory.getLogger(JsonReader.class);
     private ObjectMapper objectMapper;
 
     public JsonReader() {
@@ -46,7 +43,6 @@ public class JsonReader {
         try {
             return objectMapper.readValue(resourcePath, name);
         } catch (IOException e) {
-            logger.error("Fail to read file {} because of exception {}", fileName, e.getMessage());
             return null;
         }
     }
@@ -58,7 +54,6 @@ public class JsonReader {
         try {
             return IOUtils.toString(getResourceAsStream(fileName), Charset.defaultCharset());
         } catch (Exception e) {
-            logger.error("Fail to read file {} because of exception {}", fileName, e.getMessage());
             return "";
         }
     }
@@ -70,7 +65,6 @@ public class JsonReader {
         try {
             return objectMapper.readValue(json, name);
         } catch (IOException e) {
-            logger.error("Fail to create object {} from json {}", name, json);
             return null;
         }
     }
