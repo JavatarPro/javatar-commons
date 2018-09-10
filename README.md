@@ -5,9 +5,9 @@ The library decreses test complexcity and help to load data from file.
 Util class is pro.javatar.reader.JsonReader.
 
 Main functions:
-* create object (list) from file
-* create object (list) from string
-* get content from file as string
+- create object (list) from file
+- create object (list) from string
+- get content from file as string
 
 ---
 
