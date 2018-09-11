@@ -82,6 +82,7 @@
                                     <searchTransitive>false</searchTransitive>
                                     <excludes>
                                         <exclude>joda-time:*</exclude>
+                                        <exclude>org.projectlombok:lombok</exclude>
                                     </excludes>
                                     <includes>
                                     </includes>
