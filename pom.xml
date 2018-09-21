@@ -5,7 +5,7 @@
 
     <groupId>pro.javatar.work</groupId>
     <artifactId>json-reader</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <packaging>pom</packaging>
     <name>json-reader</name>
 
