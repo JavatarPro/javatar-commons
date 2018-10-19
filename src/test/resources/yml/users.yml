@@ -1,0 +1,14 @@
+# List of users
+---
+- name: name1
+  surname: surname
+  age: 3
+  registrationDate: 2016-05-28T17:39:44.937
+- name: name2
+  surname: surname
+  age: 3
+  registrationDate: 2016-05-28T17:39:44.937
+- name: name3
+  surname: surname
+  age: 3
+  registrationDate: 2016-05-28T17:39:44.937

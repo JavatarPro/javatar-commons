@@ -11,70 +11,69 @@ import org.junit.Test;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
- * @author Andrii Murashkin / Javatar LLC
- * @version 06-09-2018
+ * @author Serhii Petrychenko / Javatar LLC
+ * @version 19-10-2018
  */
-public class JsonReaderTest {
+
+public class YamlReaderTest {
 
     private static final String NAME = "name";
     private static final String SURNAME = "surname";
     private static final int AGE = 3;
 
-    private ResourseReader jsonReader;
+    private ResourseReader yamlReader;
     private User expectedUser;
 
     @Before
     public void setUp() {
-        jsonReader = JsonReader.getInstance();
+        yamlReader = YamlReader.getInstance();
         expectedUser = new User(NAME, SURNAME, AGE, LocalDateTime.parse("2016-05-28T17:39:44.937"));
     }
 
     @Test
     public void convertToUserObject() {
-        User user = jsonReader.getObjectFromFile("json/user.json", User.class);
+        User user = yamlReader.getObjectFromFile("yml/user.yml", User.class);
         assertNotNull(user);
         assertEquals(expectedUser, user);
     }
 
     @Test
     public void getUsersList() {
-        List<User> users = jsonReader.getListFromFile("json/users.json", User.class);
+        List<User> users = yamlReader.getListFromFile("yml/users.yml", User.class);
         assertNotNull(users);
         assertEquals(3, users.size());
     }
 
     @Test
     public void convertToStringAndToObject() {
-        String json = jsonReader.getStringFromFile("json/user.json");
+        String json = yamlReader.getStringFromFile("yml/user.yml");
         assertNotNull(json);
 
-        User userFromString = jsonReader.getObjectFromString(json, User.class);
+        User userFromString = yamlReader.getObjectFromString(json, User.class);
         assertNotNull(userFromString);
         assertEquals(expectedUser, userFromString);
     }
 
     @Test
     public void convertToStringAndToList() {
-        String json = jsonReader.getStringFromFile("json/users.json");
+        String json = yamlReader.getStringFromFile("yml/users.yml");
         assertNotNull(json);
 
-        List<User> listFromString = jsonReader.getListFromString(json, User.class);
+        List<User> listFromString = yamlReader.getListFromString(json, User.class);
         assertNotNull(listFromString);
         assertEquals(3, listFromString.size());
     }
 
     @Test
     public void notValidJsonProcessException() {
-        assertNull(jsonReader.getObjectFromFile("json/broken-user.json", User.class));
-        assertNull(jsonReader.getListFromFile("json/broken-user.json", User.class));
-        assertNull(jsonReader.getObjectFromString("{{{{", User.class));
-        assertNull(jsonReader.getListFromString("{{{{", User.class));
+        assertNull(yamlReader.getObjectFromFile("yml/broken-user.yml", User.class));
+        assertNull(yamlReader.getListFromFile("yml/broken-user.yml", User.class));
+        assertNull(yamlReader.getObjectFromString("{{{{", User.class));
+        assertNull(yamlReader.getListFromString("{{{{", User.class));
 
-        assertEquals("", jsonReader.getStringFromFile("wrong-source.json"));
+        assertEquals("", yamlReader.getStringFromFile("yml/wrong-source.yml"));
     }
 }
