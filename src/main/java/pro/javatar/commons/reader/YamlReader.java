@@ -2,33 +2,26 @@
  * Copyright (c) 2018 Javatar LLC
  * All rights reserved.
  */
-
-package pro.javatar.reader;
+package pro.javatar.commons.reader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 /**
- * @author Andrii Murashkin / Javatar LLC
- * @version 05-09-2018
+ * @author Serhii Petrychenko / Javatar LLC
+ * @version 19-10-2018
  */
-public class JsonReader extends AbstractReader {
+
+public class YamlReader extends AbstractReader implements ResourseReader {
 
     public static ResourseReader getInstance(){
-        return new JsonReader();
+        return new YamlReader();
     }
 
     @Override
     protected ObjectMapper getObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         objectMapper.findAndRegisterModules();
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         return objectMapper;

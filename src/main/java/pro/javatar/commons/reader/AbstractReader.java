@@ -2,8 +2,7 @@
  * Copyright (c) 2018 Javatar LLC
  * All rights reserved.
  */
-
-package pro.javatar.reader;
+package pro.javatar.commons.reader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
