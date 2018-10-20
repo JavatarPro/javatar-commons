@@ -6,14 +6,6 @@ package pro.javatar.commons.reader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Andrii Murashkin / Javatar LLC
@@ -21,7 +13,7 @@ import java.util.Map;
  */
 public class JsonReader extends AbstractReader {
 
-    public static ResourseReader getInstance(){
+    public static ResourceReader getInstance(){
         return new JsonReader();
     }
 

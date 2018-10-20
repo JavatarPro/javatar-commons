@@ -13,9 +13,9 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  * @version 19-10-2018
  */
 
-public class YamlReader extends AbstractReader implements ResourseReader {
+public class YamlReader extends AbstractReader implements ResourceReader {
 
-    public static ResourseReader getInstance(){
+    public static ResourceReader getInstance(){
         return new YamlReader();
     }
 

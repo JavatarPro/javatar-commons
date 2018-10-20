@@ -24,7 +24,7 @@ public class JsonReaderTest {
     private static final String SURNAME = "surname";
     private static final int AGE = 3;
 
-    private ResourseReader jsonReader;
+    private ResourceReader jsonReader;
     private User expectedUser;
 
     @Before
@@ -36,6 +36,10 @@ public class JsonReaderTest {
     @Test
     public void convertToUserObject() {
         User user = jsonReader.getObjectFromFile("json/user.json", User.class);
+        assertNotNull(user);
+        assertEquals(expectedUser, user);
+
+        user = jsonReader.getObjectFromResource("JsonReader.json", User.class);
         assertNotNull(user);
         assertEquals(expectedUser, user);
     }

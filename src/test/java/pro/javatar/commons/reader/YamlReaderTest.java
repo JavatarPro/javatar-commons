@@ -23,7 +23,7 @@ public class YamlReaderTest {
     private static final String SURNAME = "surname";
     private static final int AGE = 3;
 
-    private ResourseReader yamlReader;
+    private ResourceReader yamlReader;
     private User expectedUser;
 
     @Before
@@ -35,6 +35,10 @@ public class YamlReaderTest {
     @Test
     public void convertToUserObject() {
         User user = yamlReader.getObjectFromFile("yml/user.yml", User.class);
+        assertNotNull(user);
+        assertEquals(expectedUser, user);
+
+        user = yamlReader.getObjectFromResource("YamlReader.yml", User.class);
         assertNotNull(user);
         assertEquals(expectedUser, user);
     }

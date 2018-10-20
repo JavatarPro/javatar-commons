@@ -20,7 +20,7 @@ import java.util.Map;
  * @version 19-10-2018
  */
 
-abstract class AbstractReader implements ResourseReader {
+abstract class AbstractReader implements ResourceReader {
     ObjectMapper objectMapper;
 
     AbstractReader() {
@@ -44,6 +44,27 @@ abstract class AbstractReader implements ResourseReader {
         URL resourcePath = getFileFromClasspath(fileName);
         try {
             return objectMapper.readValue(resourcePath, name);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public <T> T getObjectFromResource(String fileName, Class<T> name) {
+        InputStream inputStream = name.getResourceAsStream(fileName);
+        try {
+            return objectMapper.readValue(inputStream, name);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public <T> List<T> getListFromResource(String fileName, Class<T> name) {
+        InputStream inputStream = name.getResourceAsStream(fileName);
+        try {
+            return objectMapper.readValue(inputStream,
+                                          objectMapper.getTypeFactory().constructCollectionType(List.class, name));
         } catch (IOException e) {
             return null;
         }

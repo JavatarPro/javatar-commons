@@ -11,8 +11,11 @@ import java.util.List;
  * @version 19-10-2018
  */
 
-public interface ResourseReader {
+public interface ResourceReader {
+
     <T> T getObjectFromFile(String fileName, Class<T> name);
+
+    <T> T getObjectFromResource(String fileName, Class<T> name);
 
     String getStringFromFile(String fileName);
 
@@ -21,4 +24,6 @@ public interface ResourseReader {
     <T> List<T> getListFromString(String json, Class<T> name);
 
     <T> List<T> getListFromFile(String fileName, Class<T> name);
+
+    <T> List<T> getListFromResource(String fileName, Class<T> name);
 }
