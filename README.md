@@ -16,15 +16,18 @@ Main functions:
 ## How to configure
 
 1. Add maven dependency
+    ```
     <dependency>
         <groupId>pro.javatar.commons</groupId>
     	<artifactId>javatar-commons</artifactId>
     	<version>0.4</version>
 	<scope>test</scope>
     </dependency>
-    
+    ```
 2. Create necessarry file in resources folder 
 
 3. How to use
+	```
 	ResourceReader reader = JsonReader.getInstance();
 	User user = jsonReader.getObjectFromFile("user.json", User.class);
+	```
