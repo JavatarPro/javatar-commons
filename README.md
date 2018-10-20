@@ -18,10 +18,10 @@ Main functions:
 1. Add maven dependency
     ```
     <dependency>
-    	<groupId>pro.javatar.commons</groupId>
-	<artifactId>javatar-commons</artifactId>
-	<version>0.4</version>
-	<scope>test</scope>
+        <groupId>pro.javatar.commons</groupId>
+        <artifactId>javatar-commons</artifactId>
+        <version>0.4</version>
+        <scope>test</scope>
     </dependency>
     ```
 2. Create necessarry file in resources folder 
