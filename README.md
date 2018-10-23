@@ -1,8 +1,10 @@
-**Json reader util** 
+**Json & Yaml reader utils** 
 
 Mostly util cab be used for test puposes (i.e. getting data from files).
 The library decreses test complexcity and help to load data from file.
-Util class is pro.javatar.reader.JsonReader.
+Util classes are 
+- pro.javatar.reader.JsonReader
+- pro.javatar.reader.YamlReader
 
 Main functions:
 - create object (list) from file
@@ -14,13 +16,18 @@ Main functions:
 ## How to configure
 
 1. Add maven dependency
-	<dependency>
-        <groupId>pro.javatar.work</groupId>
-    	<artifactId>json-reader</artifactId>
-    	<version>0.1-SNAPSHOT</version>
-		<scope>test</scope>
+    ```
+    <dependency>
+        <groupId>pro.javatar.commons</groupId>
+        <artifactId>javatar-commons</artifactId>
+        <version>0.4</version>
+        <scope>test</scope>
     </dependency>
+    ```
 2. Create necessarry file in resources folder 
+
 3. How to use
-	JsonReader jsonReader = new JsonReader();
+	```
+	ResourceReader reader = JsonReader.getInstance();
 	User user = jsonReader.getObjectFromFile("user.json", User.class);
+	```
