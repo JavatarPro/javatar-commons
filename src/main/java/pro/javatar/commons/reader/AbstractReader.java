@@ -4,8 +4,10 @@
  */
 package pro.javatar.commons.reader;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.cfg.ConfigFeature;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -27,96 +29,90 @@ abstract class AbstractReader implements ResourceReader {
         objectMapper = getObjectMapper();
     }
 
-    AbstractReader(Map<String, Boolean> properties) {
+    AbstractReader(Map<ConfigFeature, Boolean> properties) {
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        for (Map.Entry<String, Boolean> property : properties.entrySet()) {
-            objectMapper.configure(SerializationFeature.valueOf(property.getKey()), property.getValue());
+        for (Map.Entry<ConfigFeature, Boolean> property : properties.entrySet()) {
+            ConfigFeature feature = property.getKey();
+            if (feature instanceof SerializationFeature) {
+                SerializationFeature serializationFeature = SerializationFeature.valueOf(((SerializationFeature) feature).name());
+                objectMapper.configure(serializationFeature, property.getValue());
+                continue;
+            }
+            if (feature instanceof DeserializationFeature) {
+                DeserializationFeature deserializationFeature = DeserializationFeature.valueOf(((DeserializationFeature) feature).name());
+                objectMapper.configure(deserializationFeature, property.getValue());
+                continue;
+            }
+            System.out.println("Feature " + feature.toString() + " was not resolved");
         }
     }
-
 
     /**
      * @return serialized instance read from file
      */
     @Override
-    public <T> T getObjectFromFile(String fileName, Class<T> name) {
+    public <T> T getObjectFromFile(String fileName, Class<T> name) throws IOException {
         URL resourcePath = getFileFromClasspath(fileName);
-        try {
             return objectMapper.readValue(resourcePath, name);
-        } catch (IOException e) {
-            return null;
-        }
     }
 
     @Override
-    public <T> T getObjectFromResource(String fileName, Class<T> name) {
-        InputStream inputStream = name.getResourceAsStream(fileName);
-        try {
+    public <T> T getObjectFromInputStream(InputStream inputStream, Class<T> name) throws IOException {
             return objectMapper.readValue(inputStream, name);
-        } catch (IOException e) {
-            return null;
-        }
     }
 
     @Override
-    public <T> List<T> getListFromResource(String fileName, Class<T> name) {
-        InputStream inputStream = name.getResourceAsStream(fileName);
-        try {
+    public <T> List<T> getListFromInputStream(InputStream inputStream, Class<T> name) throws IOException {
             return objectMapper.readValue(inputStream,
                                           objectMapper.getTypeFactory().constructCollectionType(List.class, name));
-        } catch (IOException e) {
-            return null;
-        }
     }
 
     /**
      * @return String representation of json file
      */
     @Override
-    public String getStringFromFile(String fileName) {
-        try {
+    public String getStringFromFile(String fileName) throws IOException {
             return IOUtils.toString(getResourceAsStream(fileName), Charset.defaultCharset());
-        } catch (Exception e) {
-            return "";
-        }
     }
 
     /**
      * @return serialized object read from String
      */
     @Override
-    public <T> T getObjectFromString(String json, Class<T> name) {
-        try {
+    public <T> T getObjectFromString(String json, Class<T> name) throws IOException {
             return objectMapper.readValue(json, name);
-        } catch (IOException e) {
-            return null;
-        }
     }
 
     /**
      * @return list of serialized object read from String
      */
     @Override
-    public <T> List<T> getListFromString(String json, Class<T> name) {
-        try {
+    public <T> List<T> getListFromString(String json, Class<T> name) throws IOException {
             return objectMapper.readValue(json,
                                           objectMapper.getTypeFactory().constructCollectionType(List.class, name));
-        } catch (IOException e) {
-            return null;
-        }
     }
 
     @Override
-    public <T> List<T> getListFromFile(String fileName, Class<T> name) {
+    public <T> List<T> getListFromFile(String fileName, Class<T> name) throws IOException {
         URL resourcePath = getFileFromClasspath(fileName);
-        try {
             return objectMapper.readValue(resourcePath,
                                           objectMapper.getTypeFactory().constructCollectionType(List.class, name));
-        } catch (IOException e) {
-            return null;
-        }
     }
+
+    @Override
+    public <T> T getObjectFromResource(Class resourceClass, String fileName, Class<T> name) throws IOException {
+        InputStream stream = resourceClass.getResourceAsStream(fileName);
+        return getObjectFromInputStream(stream, name);
+    }
+
+    @Override
+    public <T> List<T> getListFromResource(Class resourceClass, String fileName, Class<T> name) throws IOException {
+        InputStream stream = resourceClass.getResourceAsStream(fileName);
+        return getListFromInputStream(stream, name);
+    }
+
+    protected abstract ObjectMapper getObjectMapper();
 
     private URL getFileFromClasspath(String filename) {
         return JsonReader.class.getClassLoader().getResource(filename);
@@ -125,6 +121,4 @@ abstract class AbstractReader implements ResourceReader {
     private InputStream getResourceAsStream(String resourcePath) {
         return JsonReader.class.getClassLoader().getResourceAsStream(resourcePath);
     }
-
-    protected abstract ObjectMapper getObjectMapper();
 }

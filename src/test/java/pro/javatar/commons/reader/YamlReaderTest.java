@@ -7,6 +7,8 @@ package pro.javatar.commons.reader;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,25 +35,30 @@ public class YamlReaderTest {
     }
 
     @Test
-    public void convertToUserObject() {
+    public void convertToUserObject() throws IOException {
         User user = yamlReader.getObjectFromFile("yml/user.yml", User.class);
         assertNotNull(user);
         assertEquals(expectedUser, user);
 
-        user = yamlReader.getObjectFromResource("YamlReader.yml", User.class);
+        InputStream stream = YamlReader.class.getResourceAsStream("YamlReader.yml");
+        user = yamlReader.getObjectFromInputStream(stream, User.class);
+        assertNotNull(user);
+        assertEquals(expectedUser, user);
+
+        user = yamlReader.getObjectFromResource(YamlReader.class,"YamlReader.yml", User.class);
         assertNotNull(user);
         assertEquals(expectedUser, user);
     }
 
     @Test
-    public void getUsersList() {
+    public void getUsersList() throws IOException {
         List<User> users = yamlReader.getListFromFile("yml/users.yml", User.class);
         assertNotNull(users);
         assertEquals(3, users.size());
     }
 
     @Test
-    public void convertToStringAndToObject() {
+    public void convertToStringAndToObject() throws IOException {
         String json = yamlReader.getStringFromFile("yml/user.yml");
         assertNotNull(json);
 
@@ -61,7 +68,7 @@ public class YamlReaderTest {
     }
 
     @Test
-    public void convertToStringAndToList() {
+    public void convertToStringAndToList() throws IOException {
         String json = yamlReader.getStringFromFile("yml/users.yml");
         assertNotNull(json);
 
@@ -70,8 +77,8 @@ public class YamlReaderTest {
         assertEquals(3, listFromString.size());
     }
 
-    @Test
-    public void notValidJsonProcessException() {
+    @Test(expected = IOException.class)
+    public void notValidJsonProcessException() throws IOException {
         assertNull(yamlReader.getObjectFromFile("yml/broken-user.yml", User.class));
         assertNull(yamlReader.getListFromFile("yml/broken-user.yml", User.class));
         assertNull(yamlReader.getObjectFromString("{{{{", User.class));

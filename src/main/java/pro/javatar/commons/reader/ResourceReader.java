@@ -4,6 +4,8 @@
  */
 package pro.javatar.commons.reader;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -13,17 +15,22 @@ import java.util.List;
 
 public interface ResourceReader {
 
-    <T> T getObjectFromFile(String fileName, Class<T> name);
+    <T> T getObjectFromFile(String fileName, Class<T> name) throws IOException;
 
-    <T> T getObjectFromResource(String fileName, Class<T> name);
+    <T> T getObjectFromInputStream(InputStream is, Class<T> name) throws IOException;
 
-    String getStringFromFile(String fileName);
+    <T> T getObjectFromResource(Class resourceClass, String fileName, Class<T> name) throws IOException;
 
-    <T> T getObjectFromString(String json, Class<T> name);
+    String getStringFromFile(String fileName) throws IOException;
 
-    <T> List<T> getListFromString(String json, Class<T> name);
+    <T> T getObjectFromString(String json, Class<T> name) throws IOException;
 
-    <T> List<T> getListFromFile(String fileName, Class<T> name);
+    <T> List<T> getListFromString(String json, Class<T> name) throws IOException;
 
-    <T> List<T> getListFromResource(String fileName, Class<T> name);
+    <T> List<T> getListFromFile(String fileName, Class<T> name) throws IOException;
+
+    <T> List<T> getListFromInputStream(InputStream is, Class<T> name) throws IOException;
+
+    <T> List<T> getListFromResource(Class resourceClass, String fileName, Class<T> name) throws IOException;
+
 }

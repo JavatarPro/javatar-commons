@@ -4,11 +4,18 @@
  */
 package pro.javatar.commons.reader;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.cfg.ConfigFeature;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -33,26 +40,41 @@ public class JsonReaderTest {
         expectedUser = new User(NAME, SURNAME, AGE, LocalDateTime.parse("2016-05-28T17:39:44.937"));
     }
 
+    @Test(expected = IOException.class)
+    public void constructorWithProperties() throws IOException {
+        Map<ConfigFeature, Boolean> config = new HashMap<>(3);
+        config.put(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.TRUE);
+        config.put(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, Boolean.FALSE);
+
+        InputStream stream = getClass().getResourceAsStream("JsonReader.json");
+        JsonReader.getInstance(config).getObjectFromInputStream(stream, User.class);
+    }
+
     @Test
-    public void convertToUserObject() {
+    public void convertToUserObject() throws IOException {
         User user = jsonReader.getObjectFromFile("json/user.json", User.class);
         assertNotNull(user);
         assertEquals(expectedUser, user);
 
-        user = jsonReader.getObjectFromResource("JsonReader.json", User.class);
+        InputStream stream = JsonReader.class.getResourceAsStream("JsonReader.json");
+        user = jsonReader.getObjectFromInputStream(stream, User.class);
+        assertNotNull(user);
+        assertEquals(expectedUser, user);
+
+        user = jsonReader.getObjectFromResource(JsonReader.class,"JsonReader.json", User.class);
         assertNotNull(user);
         assertEquals(expectedUser, user);
     }
 
     @Test
-    public void getUsersList() {
+    public void getUsersList() throws IOException {
         List<User> users = jsonReader.getListFromFile("json/users.json", User.class);
         assertNotNull(users);
         assertEquals(3, users.size());
     }
 
     @Test
-    public void convertToStringAndToObject() {
+    public void convertToStringAndToObject() throws IOException {
         String json = jsonReader.getStringFromFile("json/user.json");
         assertNotNull(json);
 
@@ -62,7 +84,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void convertToStringAndToList() {
+    public void convertToStringAndToList() throws IOException {
         String json = jsonReader.getStringFromFile("json/users.json");
         assertNotNull(json);
 
@@ -71,8 +93,8 @@ public class JsonReaderTest {
         assertEquals(3, listFromString.size());
     }
 
-    @Test
-    public void notValidJsonProcessException() {
+    @Test(expected = IOException.class)
+    public void notValidJsonProcessException() throws IOException {
         assertNull(jsonReader.getObjectFromFile("json/broken-user.json", User.class));
         assertNull(jsonReader.getListFromFile("json/broken-user.json", User.class));
         assertNull(jsonReader.getObjectFromString("{{{{", User.class));

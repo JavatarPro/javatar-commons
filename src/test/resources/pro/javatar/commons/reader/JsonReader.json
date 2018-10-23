@@ -2,5 +2,6 @@
   "name": "name",
   "surname": "surname",
   "age": 3,
+  "unknown_field":"blablabla",
   "registrationDate":"2016-05-28T17:39:44.937"
 }

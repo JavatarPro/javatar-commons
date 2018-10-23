@@ -6,7 +6,10 @@ package pro.javatar.commons.reader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.cfg.ConfigFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
+import java.util.Map;
 
 /**
  * @author Serhii Petrychenko / Javatar LLC
@@ -17,6 +20,17 @@ public class YamlReader extends AbstractReader implements ResourceReader {
 
     public static ResourceReader getInstance(){
         return new YamlReader();
+    }
+
+    public static ResourceReader getInstance(Map<ConfigFeature, Boolean> config){
+        return new YamlReader(config);
+    }
+
+    private YamlReader() {
+    }
+
+    private YamlReader(Map<ConfigFeature, Boolean> properties) {
+        super(properties);
     }
 
     @Override
