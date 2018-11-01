@@ -4,6 +4,7 @@
  */
 package pro.javatar.commons.reader;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,11 +49,20 @@ public class YamlReaderTest {
         user = yamlReader.getObjectFromResource(YamlReader.class,"YamlReader.yml", User.class);
         assertNotNull(user);
         assertEquals(expectedUser, user);
+
+        user = yamlReader.getObjectFromResource(YamlReader.class, "YamlReader.yml", new TypeReference<User>() {});
+        assertNotNull(user);
+        assertEquals(expectedUser, user);
     }
 
     @Test
     public void getUsersList() throws IOException {
         List<User> users = yamlReader.getListFromFile("yml/users.yml", User.class);
+        assertNotNull(users);
+        assertEquals(3, users.size());
+
+        InputStream stream = getClass().getResourceAsStream("/yml/users.yml");
+        users = yamlReader.getObjectFromInputStream(stream, new TypeReference<List<User>>(){});
         assertNotNull(users);
         assertEquals(3, users.size());
     }

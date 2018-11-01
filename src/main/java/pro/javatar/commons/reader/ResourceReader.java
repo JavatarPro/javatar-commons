@@ -4,6 +4,8 @@
  */
 package pro.javatar.commons.reader;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -17,9 +19,15 @@ public interface ResourceReader {
 
     <T> T getObjectFromFile(String fileName, Class<T> name) throws IOException;
 
+    <T> T getObjectFromFile(String fileName, TypeReference<T> typeRef) throws IOException;
+
     <T> T getObjectFromInputStream(InputStream is, Class<T> name) throws IOException;
 
+    <T> T getObjectFromInputStream(InputStream is, TypeReference<T> typeRef) throws IOException;
+
     <T> T getObjectFromResource(Class resourceClass, String fileName, Class<T> name) throws IOException;
+
+    <T> T getObjectFromResource(Class resourceClass, String fileName, TypeReference<T> typeRef) throws IOException;
 
     String getStringFromFile(String fileName) throws IOException;
 
