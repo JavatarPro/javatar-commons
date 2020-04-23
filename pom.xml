@@ -77,17 +77,6 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>org.javatar.commons</groupId>
-            <artifactId>javatar-builder-annotation</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.javatar.commons</groupId>
-            <artifactId>javatar-builder-processor</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
-
         <!-- jackson dependencies -->
 
         <dependency>
