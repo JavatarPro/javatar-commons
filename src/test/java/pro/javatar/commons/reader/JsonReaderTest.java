@@ -4,6 +4,7 @@
  */
 package pro.javatar.commons.reader;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.cfg.ConfigFeature;
@@ -64,11 +65,24 @@ public class JsonReaderTest {
         user = jsonReader.getObjectFromResource(JsonReader.class,"JsonReader.json", User.class);
         assertNotNull(user);
         assertEquals(expectedUser, user);
+
+        user = jsonReader.getObjectFromResource(JsonReader.class, "JsonReader.json", new TypeReference<User>() {});
+        assertNotNull(user);
+        assertEquals(expectedUser, user);
     }
 
     @Test
     public void getUsersList() throws IOException {
         List<User> users = jsonReader.getListFromFile("json/users.json", User.class);
+        assertNotNull(users);
+        assertEquals(3, users.size());
+
+        InputStream stream = getClass().getResourceAsStream("/json/users.json");
+        users = jsonReader.getObjectFromInputStream(stream, new TypeReference<List<User>>() {});
+        assertNotNull(users);
+        assertEquals(3, users.size());
+
+        users = jsonReader.getObjectFromFile("/json/users.json", new TypeReference<List<User>>() {});
         assertNotNull(users);
         assertEquals(3, users.size());
     }

@@ -4,6 +4,7 @@
  */
 package pro.javatar.commons.reader;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -110,6 +111,23 @@ abstract class AbstractReader implements ResourceReader {
     public <T> List<T> getListFromResource(Class resourceClass, String fileName, Class<T> name) throws IOException {
         InputStream stream = resourceClass.getResourceAsStream(fileName);
         return getListFromInputStream(stream, name);
+    }
+
+    @Override
+    public <T> T getObjectFromInputStream(InputStream is, TypeReference<T> typeRef) throws IOException {
+        return objectMapper.readValue(is, typeRef);
+    }
+
+    @Override
+    public <T> T getObjectFromFile(String fileName, TypeReference<T> typeRef) throws IOException {
+        URL stream = AbstractReader.class.getResource(fileName);
+        return objectMapper.readValue(stream, typeRef);
+    }
+
+    @Override
+    public <T> T getObjectFromResource(Class resourceClass, String fileName, TypeReference<T> typeRef) throws IOException {
+        InputStream stream = resourceClass.getResourceAsStream(fileName);
+        return getObjectFromInputStream(stream, typeRef);
     }
 
     protected abstract ObjectMapper getObjectMapper();
