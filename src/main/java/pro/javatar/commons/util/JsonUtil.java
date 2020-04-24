@@ -47,6 +47,9 @@ public final class JsonUtil {
     }
 
     public static String sanitize(Object object, Set<String> excludedFields, String replacement) {
+        if (object == null) {
+            return null;
+        }
         String json;
         if (object instanceof String) {
             json = (String) object;
