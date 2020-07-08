@@ -26,6 +26,10 @@ import java.util.Map;
 abstract class AbstractReader implements ResourceReader {
     ObjectMapper objectMapper;
 
+    AbstractReader(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     AbstractReader() {
         objectMapper = getObjectMapper();
     }
@@ -130,7 +134,9 @@ abstract class AbstractReader implements ResourceReader {
         return getObjectFromInputStream(stream, typeRef);
     }
 
-    protected abstract ObjectMapper getObjectMapper();
+    protected ObjectMapper getObjectMapper(){
+        return objectMapper;
+    }
 
     private URL getFileFromClasspath(String filename) {
         return JsonReader.class.getClassLoader().getResource(filename);
