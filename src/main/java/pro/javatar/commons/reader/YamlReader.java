@@ -22,11 +22,19 @@ public class YamlReader extends AbstractReader implements ResourceReader {
         return new YamlReader();
     }
 
+    public static ResourceReader getInstance(ObjectMapper objectMapper){
+        return new YamlReader(objectMapper);
+    }
+
     public static ResourceReader getInstance(Map<ConfigFeature, Boolean> config){
         return new YamlReader(config);
     }
 
     private YamlReader() {
+    }
+
+    private YamlReader(ObjectMapper objectMapper) {
+        super(objectMapper);
     }
 
     private YamlReader(Map<ConfigFeature, Boolean> properties) {

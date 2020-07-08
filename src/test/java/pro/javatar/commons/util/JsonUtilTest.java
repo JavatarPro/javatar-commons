@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static pro.javatar.commons.util.JsonUtil.REPLACEMENT;
 import static pro.javatar.commons.util.JsonUtil.sanitize;
@@ -63,6 +64,11 @@ public class JsonUtilTest {
     public void sanitizeStringObjectWithExcludedFieldsAndCustomReplacement() {
         String sanitizedString = sanitize("{\"name\":\"Javatar\",\"age\":2}", Collections.singleton("age"), "##");
         assertThat(sanitizedString, is("{\"name\":\"##\",\"age\":2}"));
+    }
+
+    @Test
+    public void objectIsNull() {
+        assertThat(sanitize(null), nullValue());
     }
 
     private static class TestObject {

@@ -21,6 +21,10 @@ public class JsonReader extends AbstractReader {
         return new JsonReader();
     }
 
+    public static ResourceReader getInstance(ObjectMapper objectMapper){
+        return new JsonReader(objectMapper);
+    }
+
     public static ResourceReader getInstance(Map<ConfigFeature, Boolean> configs){
         return new JsonReader(configs);
     }
@@ -30,6 +34,10 @@ public class JsonReader extends AbstractReader {
 
     private JsonReader(Map<ConfigFeature, Boolean> properties) {
         super(properties);
+    }
+
+    private JsonReader(ObjectMapper objectMapper) {
+        super(objectMapper);
     }
 
     @Override
