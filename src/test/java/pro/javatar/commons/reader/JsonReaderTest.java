@@ -8,8 +8,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.cfg.ConfigFeature;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,15 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Andrii Murashkin / Javatar LLC
  * @version 06-09-2018
  */
-public class JsonReaderTest {
+class JsonReaderTest {
 
     private static final String NAME = "name";
     private static final String SURNAME = "surname";
@@ -35,85 +34,103 @@ public class JsonReaderTest {
     private ResourceReader jsonReader;
     private User expectedUser;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         jsonReader = JsonReader.getInstance();
         expectedUser = new User(NAME, SURNAME, AGE, LocalDateTime.parse("2016-05-28T17:39:44.937"));
     }
 
-    @Test(expected = IOException.class)
-    public void constructorWithProperties() throws IOException {
+    @Test
+    void constructorWithProperties() {
         Map<ConfigFeature, Boolean> config = new HashMap<>(3);
         config.put(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.TRUE);
         config.put(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, Boolean.FALSE);
 
-        InputStream stream = getClass().getResourceAsStream("JsonReader.json");
-        JsonReader.getInstance(config).getObjectFromInputStream(stream, User.class);
+        var stream = getClass().getResourceAsStream("JsonReader.json");
+        assertThrows(ParseContentReaderException.class,
+                () -> JsonReader.getInstance(config).getObjectFromInputStream(stream, User.class));
     }
 
     @Test
-    public void convertToUserObject() throws IOException {
-        User user = jsonReader.getObjectFromFile("json/user.json", User.class);
-        assertNotNull(user);
-        assertEquals(expectedUser, user);
+    void convertToUserObject() {
+        var user = jsonReader.getObjectFromFile("json/user.json", User.class);
+        assertThat(user)
+                .isNotNull()
+                .isEqualTo(expectedUser);
 
-        InputStream stream = JsonReader.class.getResourceAsStream("JsonReader.json");
+        var stream = JsonReader.class.getResourceAsStream("JsonReader.json");
         user = jsonReader.getObjectFromInputStream(stream, User.class);
-        assertNotNull(user);
-        assertEquals(expectedUser, user);
+        assertThat(user)
+                .isNotNull()
+                .isEqualTo(expectedUser);
 
-        user = jsonReader.getObjectFromResource(JsonReader.class,"JsonReader.json", User.class);
-        assertNotNull(user);
-        assertEquals(expectedUser, user);
+        user = jsonReader.getObjectFromResource(JsonReader.class, "JsonReader.json", User.class);
+        assertThat(user)
+                .isNotNull()
+                .isEqualTo(expectedUser);
 
-        user = jsonReader.getObjectFromResource(JsonReader.class, "JsonReader.json", new TypeReference<User>() {});
-        assertNotNull(user);
-        assertEquals(expectedUser, user);
+        user = jsonReader.getObjectFromResource(JsonReader.class, "JsonReader.json", new TypeReference<User>() {
+        });
+        assertThat(user)
+                .isNotNull()
+                .isEqualTo(expectedUser);
     }
 
     @Test
-    public void getUsersList() throws IOException {
+    void getUsersList() throws IOException {
         List<User> users = jsonReader.getListFromFile("json/users.json", User.class);
-        assertNotNull(users);
-        assertEquals(3, users.size());
+        assertThat(users)
+                .isNotNull()
+                .hasSize(3);
 
         InputStream stream = getClass().getResourceAsStream("/json/users.json");
-        users = jsonReader.getObjectFromInputStream(stream, new TypeReference<List<User>>() {});
-        assertNotNull(users);
-        assertEquals(3, users.size());
+        users = jsonReader.getObjectFromInputStream(stream, new TypeReference<List<User>>() {
+        });
+        assertThat(users)
+                .isNotNull()
+                .hasSize(3);
 
-        users = jsonReader.getObjectFromFile("/json/users.json", new TypeReference<List<User>>() {});
-        assertNotNull(users);
-        assertEquals(3, users.size());
+        users = jsonReader.getObjectFromFile("/json/users.json", new TypeReference<List<User>>() {
+        });
+        assertThat(users)
+                .isNotNull()
+                .hasSize(3);
     }
 
     @Test
-    public void convertToStringAndToObject() throws IOException {
+    void convertToStringAndToObject() throws IOException {
         String json = jsonReader.getStringFromFile("json/user.json");
-        assertNotNull(json);
+        assertThat(json).isNotNull();
 
         User userFromString = jsonReader.getObjectFromString(json, User.class);
-        assertNotNull(userFromString);
-        assertEquals(expectedUser, userFromString);
+        assertThat(userFromString)
+                .isNotNull()
+                .isEqualTo(expectedUser);
     }
 
     @Test
-    public void convertToStringAndToList() throws IOException {
+    void convertToStringAndToList() throws IOException {
         String json = jsonReader.getStringFromFile("json/users.json");
-        assertNotNull(json);
+        assertThat(json).isNotNull();
 
         List<User> listFromString = jsonReader.getListFromString(json, User.class);
-        assertNotNull(listFromString);
-        assertEquals(3, listFromString.size());
+        assertThat(listFromString)
+                .isNotNull()
+                .hasSize(3);
     }
 
-    @Test(expected = IOException.class)
-    public void notValidJsonProcessException() throws IOException {
-        assertNull(jsonReader.getObjectFromFile("json/broken-user.json", User.class));
-        assertNull(jsonReader.getListFromFile("json/broken-user.json", User.class));
-        assertNull(jsonReader.getObjectFromString("{{{{", User.class));
-        assertNull(jsonReader.getListFromString("{{{{", User.class));
+    @Test
+    void notValidJsonProcessException() {
+        assertThrows(ParseContentReaderException.class,
+                () -> jsonReader.getObjectFromFile("json/broken-user.json", User.class));
+        assertThrows(ParseContentReaderException.class,
+                () -> jsonReader.getListFromFile("json/broken-user.json", User.class));
+        assertThrows(ParseContentReaderException.class,
+                () -> jsonReader.getObjectFromString("{{{{", User.class));
+        assertThrows(ParseContentReaderException.class,
+                () -> jsonReader.getListFromString("{{{{", User.class));
 
-        assertEquals("", jsonReader.getStringFromFile("wrong-source.json"));
+        assertThrows(NullPointerException.class,
+                () -> jsonReader.getStringFromFile("wrong-source.json"));
     }
 }

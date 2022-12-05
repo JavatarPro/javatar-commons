@@ -6,7 +6,6 @@ package pro.javatar.commons.reader;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -17,28 +16,28 @@ import java.util.List;
 
 public interface ResourceReader {
 
-    <T> T getObjectFromFile(String fileName, Class<T> name) throws IOException;
+    <T> T getObjectFromFile(String fileName, Class<T> name);
 
-    <T> T getObjectFromFile(String fileName, TypeReference<T> typeRef) throws IOException;
+    <T> T getObjectFromFile(String fileName, TypeReference<T> typeRef);
 
-    <T> T getObjectFromInputStream(InputStream is, Class<T> name) throws IOException;
+    <T> T getObjectFromInputStream(InputStream is, Class<T> name);
 
-    <T> T getObjectFromInputStream(InputStream is, TypeReference<T> typeRef) throws IOException;
+    <T> T getObjectFromInputStream(InputStream is, TypeReference<T> typeRef);
 
-    <T> T getObjectFromResource(Class resourceClass, String fileName, Class<T> name) throws IOException;
+    <T> T getObjectFromResource(Class resourceClass, String fileName, Class<T> name);
 
-    <T> T getObjectFromResource(Class resourceClass, String fileName, TypeReference<T> typeRef) throws IOException;
+    <T> T getObjectFromResource(Class resourceClass, String fileName, TypeReference<T> typeRef);
 
-    String getStringFromFile(String fileName) throws IOException;
+    String getStringFromFile(String fileName);
 
-    <T> T getObjectFromString(String json, Class<T> name) throws IOException;
+    <T> T getObjectFromString(String json, Class<T> name);
 
-    <T> List<T> getListFromString(String json, Class<T> name) throws IOException;
+    <T> List<T> getListFromString(String json, Class<T> name);
 
-    <T> List<T> getListFromFile(String fileName, Class<T> name) throws IOException;
+    <T> List<T> getListFromFile(String fileName, Class<T> name);
 
-    <T> List<T> getListFromInputStream(InputStream is, Class<T> name) throws IOException;
+    <T> List<T> getListFromInputStream(InputStream is, Class<T> name);
 
-    <T> List<T> getListFromResource(Class resourceClass, String fileName, Class<T> name) throws IOException;
+    <T> List<T> getListFromResource(Class resourceClass, String fileName, Class<T> name);
 
 }

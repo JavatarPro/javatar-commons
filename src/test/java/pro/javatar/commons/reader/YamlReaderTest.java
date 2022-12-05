@@ -4,23 +4,25 @@
  */
 package pro.javatar.commons.reader;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.junit.Before;
-import org.junit.Test;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Serhii Petrychenko / Javatar LLC
  * @version 19-10-2018
  */
 
-public class YamlReaderTest {
+class YamlReaderTest {
 
     private static final String NAME = "name";
     private static final String SURNAME = "surname";
@@ -29,71 +31,86 @@ public class YamlReaderTest {
     private ResourceReader yamlReader;
     private User expectedUser;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         yamlReader = YamlReader.getInstance();
         expectedUser = new User(NAME, SURNAME, AGE, LocalDateTime.parse("2016-05-28T17:39:44.937"));
     }
 
     @Test
-    public void convertToUserObject() throws IOException {
-        User user = yamlReader.getObjectFromFile("yml/user.yml", User.class);
-        assertNotNull(user);
-        assertEquals(expectedUser, user);
+    void convertToUserObject() throws IOException {
+        var user = yamlReader.getObjectFromFile("yml/user.yml", User.class);
+        assertThat(user)
+                .isNotNull()
+                .isEqualTo(expectedUser);
 
-        InputStream stream = YamlReader.class.getResourceAsStream("YamlReader.yml");
+        var stream = YamlReader.class.getResourceAsStream("YamlReader.yml");
         user = yamlReader.getObjectFromInputStream(stream, User.class);
-        assertNotNull(user);
-        assertEquals(expectedUser, user);
+        assertThat(user)
+                .isNotNull()
+                .isEqualTo(expectedUser);
 
-        user = yamlReader.getObjectFromResource(YamlReader.class,"YamlReader.yml", User.class);
-        assertNotNull(user);
-        assertEquals(expectedUser, user);
+        user = yamlReader.getObjectFromResource(YamlReader.class, "YamlReader.yml", User.class);
+        assertThat(user)
+                .isNotNull()
+                .isEqualTo(expectedUser);
 
-        user = yamlReader.getObjectFromResource(YamlReader.class, "YamlReader.yml", new TypeReference<User>() {});
-        assertNotNull(user);
-        assertEquals(expectedUser, user);
+        user = yamlReader.getObjectFromResource(YamlReader.class, "YamlReader.yml", new TypeReference<User>() {
+        });
+        assertThat(user)
+                .isNotNull()
+                .isEqualTo(expectedUser);
     }
 
     @Test
-    public void getUsersList() throws IOException {
+    void getUsersList() throws IOException {
         List<User> users = yamlReader.getListFromFile("yml/users.yml", User.class);
-        assertNotNull(users);
-        assertEquals(3, users.size());
+        assertThat(users)
+                .isNotNull()
+                .hasSize(3);
 
-        InputStream stream = getClass().getResourceAsStream("/yml/users.yml");
-        users = yamlReader.getObjectFromInputStream(stream, new TypeReference<List<User>>(){});
-        assertNotNull(users);
-        assertEquals(3, users.size());
+        var stream = getClass().getResourceAsStream("/yml/users.yml");
+        users = yamlReader.getObjectFromInputStream(stream, new TypeReference<List<User>>() {
+        });
+        assertThat(users)
+                .isNotNull()
+                .hasSize(3);
     }
 
     @Test
-    public void convertToStringAndToObject() throws IOException {
+    void convertToStringAndToObject() throws IOException {
         String json = yamlReader.getStringFromFile("yml/user.yml");
-        assertNotNull(json);
+        assertThat(json).isNotNull();
 
         User userFromString = yamlReader.getObjectFromString(json, User.class);
-        assertNotNull(userFromString);
-        assertEquals(expectedUser, userFromString);
+        assertThat(userFromString)
+                .isNotNull()
+                .isEqualTo(expectedUser);
     }
 
     @Test
-    public void convertToStringAndToList() throws IOException {
+    void convertToStringAndToList() throws IOException {
         String json = yamlReader.getStringFromFile("yml/users.yml");
-        assertNotNull(json);
+        assertThat(json).isNotNull();
 
         List<User> listFromString = yamlReader.getListFromString(json, User.class);
-        assertNotNull(listFromString);
-        assertEquals(3, listFromString.size());
+        assertThat(listFromString)
+                .isNotNull()
+                .hasSize(3);
     }
 
-    @Test(expected = IOException.class)
-    public void notValidJsonProcessException() throws IOException {
-        assertNull(yamlReader.getObjectFromFile("yml/broken-user.yml", User.class));
-        assertNull(yamlReader.getListFromFile("yml/broken-user.yml", User.class));
-        assertNull(yamlReader.getObjectFromString("{{{{", User.class));
-        assertNull(yamlReader.getListFromString("{{{{", User.class));
+    @Test
+    void notValidJsonProcessException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> yamlReader.getObjectFromFile("yml/broken-user.json", User.class));
+        assertThrows(IllegalArgumentException.class,
+                () -> yamlReader.getListFromFile("yml/broken-user.json", User.class));
+        assertThrows(ParseContentReaderException.class,
+                () -> yamlReader.getObjectFromString("{{{{", User.class));
+        assertThrows(ParseContentReaderException.class,
+                () -> yamlReader.getListFromString("{{{{", User.class));
 
-        assertEquals("", yamlReader.getStringFromFile("yml/wrong-source.yml"));
+        assertThrows(NullPointerException.class,
+                () -> yamlReader.getStringFromFile("wrong-source.json"));
     }
 }

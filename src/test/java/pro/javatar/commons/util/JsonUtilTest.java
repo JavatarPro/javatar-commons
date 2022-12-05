@@ -1,74 +1,77 @@
 package pro.javatar.commons.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static pro.javatar.commons.util.JsonUtil.REPLACEMENT;
 import static pro.javatar.commons.util.JsonUtil.sanitize;
 
-public class JsonUtilTest {
+class JsonUtilTest {
 
     @Test
-    public void sanitizeObject() {
+    void sanitizeObject() {
 
         TestObject testObject = new TestObject("Javatar", 2, Arrays.asList("security", "CI/CD"), Collections.singletonMap("Ukrainian", "C1"));
 
         String sanitizedString = sanitize(testObject);
-        assertThat(sanitizedString, is("{\"name\":\"" + REPLACEMENT + "\",\"age\":\"" + REPLACEMENT + "\",\"skills\":[\"" + REPLACEMENT + "\",\"" + REPLACEMENT + "\"],\"langs\":{\"Ukrainian\":\"" + REPLACEMENT + "\"}}"));
+        assertThat(sanitizedString)
+                .isEqualTo("{\"name\":\"" + REPLACEMENT + "\",\"age\":\"" + REPLACEMENT + "\",\"skills\":[\"" + REPLACEMENT + "\",\"" + REPLACEMENT + "\"],\"langs\":{\"Ukrainian\":\"" + REPLACEMENT + "\"}}");
     }
 
     @Test
-    public void sanitizeStringObject() {
+    void sanitizeStringObject() {
         String sanitizedString = sanitize("{\"name\":\"Javatar\",\"age\":2}");
-        assertThat(sanitizedString, is("{\"name\":\"" + REPLACEMENT + "\",\"age\":\"" + REPLACEMENT + "\"}"));
+        assertThat(sanitizedString)
+                .isEqualTo("{\"name\":\"" + REPLACEMENT + "\",\"age\":\"" + REPLACEMENT + "\"}");
     }
 
     @Test
     public void sanitizeStringObjectWithCustomReplacement() {
         String sanitizedString = sanitize("{\"name\":\"Javatar\",\"age\":2}", "---");
-        assertThat(sanitizedString, is("{\"name\":\"---\",\"age\":\"---\"}"));
+        assertThat(sanitizedString)
+                .isEqualTo("{\"name\":\"---\",\"age\":\"---\"}");
     }
 
     @Test
     public void sanitizeStringList() {
         String sanitizedString = sanitize("[1,2]");
-        assertThat(sanitizedString, is("[\"" + REPLACEMENT + "\",\"" + REPLACEMENT + "\"]"));
+        assertThat(sanitizedString)
+                .isEqualTo("[\"" + REPLACEMENT + "\",\"" + REPLACEMENT + "\"]");
     }
 
     @Test
-    public void sanitizeString() {
+    void sanitizeString() {
         String sanitizedString = "Just a string";
-        assertThat(sanitize(sanitizedString), is(REPLACEMENT));
+        assertThat(sanitize(sanitizedString)).isEqualTo(REPLACEMENT);
     }
 
     @Test
-    public void sanitizeWithExcludedFields() {
+    void sanitizeWithExcludedFields() {
         TestObject testObject = new TestObject("Javatar", 2, Arrays.asList("security", "CI/CD"), Collections.singletonMap("Ukrainian", "C1"));
 
         Set<String> excludedFields = new HashSet<>(Arrays.asList("age", "langs", "skills"));
         String sanitizedString = sanitize(testObject, excludedFields);
-        assertThat(sanitizedString, is("{\"name\":\"" + REPLACEMENT + "\",\"age\":2,\"skills\":[\"security\",\"CI/CD\"],\"langs\":{\"Ukrainian\":\"C1\"}}"));
+        assertThat(sanitizedString)
+                .isEqualTo("{\"name\":\"" + REPLACEMENT + "\",\"age\":2,\"skills\":[\"security\",\"CI/CD\"],\"langs\":{\"Ukrainian\":\"C1\"}}");
     }
 
     @Test
-    public void sanitizeStringObjectWithExcludedFields() {
+    void sanitizeStringObjectWithExcludedFields() {
         String sanitizedString = sanitize("{\"name\":\"Javatar\",\"age\":2}", Collections.singleton("age"));
-        assertThat(sanitizedString, is("{\"name\":\"" + REPLACEMENT + "\",\"age\":2}"));
+        assertThat(sanitizedString).isEqualTo("{\"name\":\"" + REPLACEMENT + "\",\"age\":2}");
     }
 
     @Test
-    public void sanitizeStringObjectWithExcludedFieldsAndCustomReplacement() {
+    void sanitizeStringObjectWithExcludedFieldsAndCustomReplacement() {
         String sanitizedString = sanitize("{\"name\":\"Javatar\",\"age\":2}", Collections.singleton("age"), "##");
-        assertThat(sanitizedString, is("{\"name\":\"##\",\"age\":2}"));
+        assertThat(sanitizedString).isEqualTo("{\"name\":\"##\",\"age\":2}");
     }
 
     @Test
-    public void objectIsNull() {
-        assertThat(sanitize(null), nullValue());
+    void objectIsNull() {
+        assertThat(sanitize(null)).isNull();
     }
 
     private static class TestObject {

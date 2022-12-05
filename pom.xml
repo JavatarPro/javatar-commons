@@ -62,17 +62,21 @@
     </issueManagement>
 
     <properties>
-        <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
-        <java.version>1.8</java.version>
+
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.enforce.plugin.version>3.0.0-M2</maven.enforce.plugin.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <jackson.version>2.10.2</jackson.version>
-        <commons-io.version>2.6</commons-io.version>
-        <junit.version>4.12</junit.version>
+
+        <jackson.version>2.12.5</jackson.version>
+        <commons-io.version>2.7</commons-io.version>
+        <junit.version>5.9.0</junit.version>
+
+        <maven.enforce.plugin.version>3.0.0</maven.enforce.plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+
+        <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
     </properties>
 
     <dependencies>
@@ -124,9 +128,16 @@
         <!-- test dependencies -->
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.23.1</version>
             <scope>test</scope>
         </dependency>
 
@@ -137,7 +148,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.10.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -173,7 +184,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -260,7 +271,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
+                        <version>3.0.1</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
