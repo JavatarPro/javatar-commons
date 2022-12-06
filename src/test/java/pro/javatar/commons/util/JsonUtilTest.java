@@ -28,14 +28,14 @@ class JsonUtilTest {
     }
 
     @Test
-    public void sanitizeStringObjectWithCustomReplacement() {
+    void sanitizeStringObjectWithCustomReplacement() {
         String sanitizedString = sanitize("{\"name\":\"Javatar\",\"age\":2}", "---");
         assertThat(sanitizedString)
                 .isEqualTo("{\"name\":\"---\",\"age\":\"---\"}");
     }
 
     @Test
-    public void sanitizeStringList() {
+    void sanitizeStringList() {
         String sanitizedString = sanitize("[1,2]");
         assertThat(sanitizedString)
                 .isEqualTo("[\"" + REPLACEMENT + "\",\"" + REPLACEMENT + "\"]");

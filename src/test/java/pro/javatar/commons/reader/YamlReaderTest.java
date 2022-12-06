@@ -4,13 +4,11 @@
  */
 package pro.javatar.commons.reader;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,13 +36,13 @@ class YamlReaderTest {
     }
 
     @Test
-    void convertToUserObject() throws IOException {
-        var user = yamlReader.getObjectFromFile("yml/user.yml", User.class);
+    void convertToUserObject() {
+        User user = yamlReader.getObjectFromFile("yml/user.yml", User.class);
         assertThat(user)
                 .isNotNull()
                 .isEqualTo(expectedUser);
 
-        var stream = YamlReader.class.getResourceAsStream("YamlReader.yml");
+        InputStream stream = YamlReader.class.getResourceAsStream("YamlReader.yml");
         user = yamlReader.getObjectFromInputStream(stream, User.class);
         assertThat(user)
                 .isNotNull()
@@ -63,13 +61,13 @@ class YamlReaderTest {
     }
 
     @Test
-    void getUsersList() throws IOException {
+    void getUsersList() {
         List<User> users = yamlReader.getListFromFile("yml/users.yml", User.class);
         assertThat(users)
                 .isNotNull()
                 .hasSize(3);
 
-        var stream = getClass().getResourceAsStream("/yml/users.yml");
+        InputStream stream = getClass().getResourceAsStream("/yml/users.yml");
         users = yamlReader.getObjectFromInputStream(stream, new TypeReference<List<User>>() {
         });
         assertThat(users)
@@ -78,7 +76,7 @@ class YamlReaderTest {
     }
 
     @Test
-    void convertToStringAndToObject() throws IOException {
+    void convertToStringAndToObject() {
         String json = yamlReader.getStringFromFile("yml/user.yml");
         assertThat(json).isNotNull();
 
@@ -89,7 +87,7 @@ class YamlReaderTest {
     }
 
     @Test
-    void convertToStringAndToList() throws IOException {
+    void convertToStringAndToList() {
         String json = yamlReader.getStringFromFile("yml/users.yml");
         assertThat(json).isNotNull();
 

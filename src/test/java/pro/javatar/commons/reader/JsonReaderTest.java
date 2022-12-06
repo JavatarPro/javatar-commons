@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.cfg.ConfigFeature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -46,19 +45,19 @@ class JsonReaderTest {
         config.put(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.TRUE);
         config.put(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, Boolean.FALSE);
 
-        var stream = getClass().getResourceAsStream("JsonReader.json");
+        InputStream stream = getClass().getResourceAsStream("JsonReader.json");
         assertThrows(ParseContentReaderException.class,
                 () -> JsonReader.getInstance(config).getObjectFromInputStream(stream, User.class));
     }
 
     @Test
     void convertToUserObject() {
-        var user = jsonReader.getObjectFromFile("json/user.json", User.class);
+        User user = jsonReader.getObjectFromFile("json/user.json", User.class);
         assertThat(user)
                 .isNotNull()
                 .isEqualTo(expectedUser);
 
-        var stream = JsonReader.class.getResourceAsStream("JsonReader.json");
+        InputStream stream = JsonReader.class.getResourceAsStream("JsonReader.json");
         user = jsonReader.getObjectFromInputStream(stream, User.class);
         assertThat(user)
                 .isNotNull()
@@ -77,7 +76,7 @@ class JsonReaderTest {
     }
 
     @Test
-    void getUsersList() throws IOException {
+    void getUsersList() {
         List<User> users = jsonReader.getListFromFile("json/users.json", User.class);
         assertThat(users)
                 .isNotNull()
@@ -98,7 +97,7 @@ class JsonReaderTest {
     }
 
     @Test
-    void convertToStringAndToObject() throws IOException {
+    void convertToStringAndToObject() {
         String json = jsonReader.getStringFromFile("json/user.json");
         assertThat(json).isNotNull();
 
@@ -109,7 +108,7 @@ class JsonReaderTest {
     }
 
     @Test
-    void convertToStringAndToList() throws IOException {
+    void convertToStringAndToList() {
         String json = jsonReader.getStringFromFile("json/users.json");
         assertThat(json).isNotNull();
 
